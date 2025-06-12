@@ -17,6 +17,7 @@ public class StockDetailDto {
     private BigDecimal currentPrice; // 현재가
     private BigDecimal fluctuationRate; // 등락률
     private Long accumulatedVolume; // 누적 거래량
+    private String imageUrl; // 종목 로고 이미지 Url
     public StockDetailDto(StockDetail stockDetail){
         this.id = stockDetail.getId();
         this.name = stockDetail.getStocks().getStockName();
@@ -24,5 +25,6 @@ public class StockDetailDto {
         this.currentPrice = stockDetail.getClosePrice();
         this.fluctuationRate = stockDetail.getPriceRate();
         this.accumulatedVolume = stockDetail.getVolume();
+        this.imageUrl = stockDetail.getStocks().getLogoUrl();
     }
 }
