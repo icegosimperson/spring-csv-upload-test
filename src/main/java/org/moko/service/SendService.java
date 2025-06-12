@@ -1,20 +1,14 @@
 package org.moko.service;
 
 import lombok.RequiredArgsConstructor;
-import org.moko.dto.StockDto;
-import org.moko.entity.Stock;
+import org.moko.entity.StockDetail;
 import org.moko.repository.StockRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.nio.Buffer;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,7 +22,7 @@ public class SendService {
         BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()));
         String line;
         boolean isFirst = true;
-        List<Stock> stocks = new ArrayList<>();
+        List<StockDetail> stockDetails = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         while ((line = br.readLine()) != null) {
             line = line.trim();
@@ -43,7 +37,7 @@ public class SendService {
                     continue;
                 }
 
-                Stock stock = Stock.builder()
+                StockDetail stockDetail = StockDetail.builder()
                         .stockCode(tokens[1].replace("\"", ""))
                         .openPrice(new BigDecimal(tokens[2].replace("\"", "")))
                         .highPrice(new BigDecimal(tokens[3].replace("\"", "")))
@@ -57,14 +51,14 @@ public class SendService {
                         .createdAt(LocalDateTime.parse(tokens[11].replace("\"", ""), formatter))
                         .build();
 
-                stocks.add(stock);
+                stockDetails.add(stockDetail);
 
             } catch (Exception e) {
                 System.out.println("문제 있는 줄: " + line);
                 e.printStackTrace();
             }
         }
-        System.out.println("저장 대상: " + stocks.size() + "건");
-        stockRepository.saveAll(stocks);
+        System.out.println("저장 대상: " + stockDetails.size() + "건");
+        stockRepository.saveAll(stockDetails);
     }
 }

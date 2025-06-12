@@ -1,8 +1,8 @@
 package org.moko.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.moko.dto.StockDto;
-import org.moko.entity.Stock;
+import org.moko.dto.StockDetailDto;
+import org.moko.entity.StockDetail;
 import org.moko.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,18 +20,20 @@ public class StockController {
     @Autowired
     private StockRepository stockRepository;
     @GetMapping
-    public List<Stock> getAllStocks(){
-        return stockRepository.findAll();
+    public List<StockDetailDto> getAllStocks(){
+        return stockRepository.findAll().stream()
+                .map(StockDetailDto::new)  // ✅ DTO 생성자 사용
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{code}")
-    public List<Stock> getStocksByCode(@PathVariable String code){
+    public List<StockDetail> getStocksByCode(@PathVariable String code){
         return stockRepository.findByStockCode(code);
     }
     @GetMapping("/market")
-    public List<StockDto> getMarketStockList() {
+    public List<StockDetailDto> getMarketStockList() {
         return stockRepository.findAll().stream()
-                .map(StockDto::new)
+                .map(StockDetailDto::new)
                 .collect(Collectors.toList());
     }
 }
